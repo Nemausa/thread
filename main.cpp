@@ -4,12 +4,12 @@
 #include <string>
 
 
-#include "threadpool.h"
-#include "promise.hpp"
-#include "condition.hpp"
-#include "condition2.hpp"
-#include "future.hpp"
-
+#include <threadpool.h>
+#include <promise.hpp>
+#include <condition.hpp>
+#include <condition2.hpp>
+#include <future.hpp>
+#include <stream.hpp>
 
 class A
 {
@@ -35,32 +35,39 @@ public:
 
     void threadFunc(std::string &str, int a)
     {
-        str = "change by threadFunc";
+        str = "change by threadFunc";      
         a = 13;
+    }
+    void test()
+    {
+        std::cout << "test" << std::endl;
     }
 };
 
+void func(A &a)
+{
+    std::cout << "fun(A &)" << std::endl;
+    a.test();
+}
+
 void run()
 {
-    std::string str("main");
 
     A t(10);
-    int a = 10;
-    std::thread th(&A::threadFunc, std::ref(t), std::ref(str), a);
-    th.detach();
-
-    std::cout << "str = " << str << std::endl;
-    std::cout << "a = " << a << std::endl;
-    
-    
+    std::thread th(&func, std::ref(t));
+    th.join();
+   
 }
 
 
 int main()
 {
-    vsomeip::condition::main();
-    vsomeip::condition2::main();
-    vsomeip::future::main();
-    
+    // vsomeip::condition::main();
+    // vsomeip::condition2::main();
+    // vsomeip::future::main();
+    //vsomeip::promise::manager();
+    // run();
+    vsomeip::stream::run();
+
     return 0;
 }

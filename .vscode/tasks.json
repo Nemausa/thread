@@ -20,7 +20,7 @@
                     }
                 },
                 "args": [
-                    "-Force",
+                    "-Force",             
                     "build"
                 ],
             }
@@ -32,7 +32,7 @@
             "type": "shell",
             "command": "cmake",
             "args": [
-                "-DCMAKE_BUILD_TYPE=${input:CMAKE_BUILD_TYPE}",
+                "-DCMAKE_BUILD_TYPE=Debug",
                 "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON", // 生成compile_commands.json 供c/c++扩展提示使用
                 "../"
             ],
@@ -41,7 +41,7 @@
             },
             "windows": {
                 "args": [
-                    "-DCMAKE_BUILD_TYPE=${input:CMAKE_BUILD_TYPE}",
+                    "-DCMAKE_BUILD_TYPE=Debug",
                     "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
                     "../",
                     "-G",
@@ -53,8 +53,8 @@
                         // 需要根据安装的vs版本调用vs工具命令提示符
                         "executable": "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Auxiliary\\Build\\vcvarsall.bat",
                         "args": [
-                            "${input:PLATFORM}", //指定平台
-                            "-vcvars_ver=${input:vcvars_ver}", //指定vc环境版本
+                            "amd64", //指定平台
+                            "-vcvars_ver=14.2", //指定vc环境版本
                             "&&"
                         ]
                     }
@@ -88,8 +88,8 @@
                         // "executable": "C:\\Program Files (x86)\\Microsoft Visual Studio 12.0\\VC\\vcvarsall.bat",
                         "executable": "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Auxiliary\\Build\\vcvarsall.bat",
                         "args": [
-                            "${input:PLATFORM}",
-                            "-vcvars_ver=${input:vcvars_ver}",
+                            "amd64",
+                            "-vcvars_ver=14.2",
                             "&&"
                         ]
                     }

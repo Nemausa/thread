@@ -1,10 +1,24 @@
 cmake_minimum_required(VERSION 2.8)
 
+if (CMAKE_HOST_WIN32)
+    set(WINDOWS 1)
+elseif (CMAKE_HOST_APPLE)
+    set(MACOS 1)
+elseif (CMAKE_HOST_UNIX)
+    set(LINUX 1)
+endif ()
+
+if(!WINDOWS)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -std=c++11 -pthread")
+endif(!WINDOWS)
 
-PROJECT(thread)
+STRING( REGEX REPLACE ".*/(.*)" "\\1" CURRENT_FOLDER ${CMAKE_CURRENT_SOURCE_DIR} ) 
 
-FILE(GLOB SRC_LIST_CPP ${PROJECT_SOURCE_DIR}/*.cpp)
+PROJECT(${CURRENT_FOLDER})
+
+include_directories(vsomeip)
+
+FILE(GLOB SRC_LIST_CPP ${PROJECT_SOURCE_DIR}/vsomeip/*.cpp)
 
 AUX_SOURCE_DIRECTORY(. SRC_LIST_CPP)
 ADD_EXECUTABLE(${PROJECT_NAME} ${SRC_LIST_CPP})

@@ -20,6 +20,7 @@ namespace vsomeip
                 : hood(true), electricity(true),
                   exhaust(true), engine(true)
             {
+                std::cout << "Car()" << std::endl;
             }
 
             void remove_the_hood()
@@ -135,10 +136,7 @@ namespace vsomeip
             make_break(10);
         }
 
-        void run()
-        {
-            manager();
-        }
+
     }
     
 }

@@ -24,7 +24,6 @@ namespace vsomeip
       {
           return SONS_LAUNDRY == Laundry::DIRTY;
       }
-
       void clean_laundry()
       {
           std::unique_lock<std::mutex> lock(MUT);
