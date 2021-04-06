@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
 
+STRING( REGEX REPLACE ".*/(.*)" "\\1" CURRENT_FOLDER ${CMAKE_CURRENT_SOURCE_DIR} )
+PROJECT(${CURRENT_FOLDER})
+
 if (CMAKE_HOST_WIN32)
     message("-- This is Windows")
     set(WINDOWS 1)
@@ -15,8 +18,7 @@ endif ()
 
 
 
-STRING( REGEX REPLACE ".*/(.*)" "\\1" CURRENT_FOLDER ${CMAKE_CURRENT_SOURCE_DIR} )
-PROJECT(${CURRENT_FOLDER})
+
 
 include_directories(vsomeip)
 

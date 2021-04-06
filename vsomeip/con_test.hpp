@@ -93,8 +93,9 @@ void pop() {
 }
 
 void run() {
-    send_buffer = new char(1024);
-    recv_buffer = new char(1024);
+    char a[1024], b[1024];
+    send_buffer = a;
+    recv_buffer = b;
 
     std::thread t(push);
     std::thread u(pop);
