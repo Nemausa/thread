@@ -9,7 +9,8 @@
 #include <condition.hpp>
 #include <condition2.hpp>
 #include <future.hpp>
-#include <stream.hpp>
+#include <con_test.hpp>
+
 
 class A
 {
