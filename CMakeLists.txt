@@ -16,10 +16,6 @@ elseif (CMAKE_HOST_UNIX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -std=c++11 -pthread")
 endif ()
 
-
-
-
-
 include_directories(vsomeip)
 
 FILE(GLOB SRC_LIST_CPP ${PROJECT_SOURCE_DIR}/vsomeip/*.cpp)

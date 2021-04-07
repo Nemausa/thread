@@ -3,72 +3,31 @@
 #include <chrono>
 #include <string>
 
-
 #include <threadpool.h>
 #include <promise.hpp>
 #include <condition.hpp>
 #include <condition2.hpp>
 #include <future.hpp>
 #include <con_test.hpp>
-
-
-class A
-{
-private:
-    int data_;
-
-public:
-    A(int _data):data_(_data)
-    {
-        std::cout << "constructor: " << this << std::endl;
-        _data += 10;
-    }
-
-    A(const A& a):data_(a.data_)
-    {
-        std::cout << "copy constructor: " << this << std::endl;
-    }
-
-    ~A()
-    {
-        std::cout << "destructor: " << this << std::endl;
-    }
-
-    void threadFunc(std::string &str, int a)
-    {
-        str = "change by threadFunc";      
-        a = 13;
-    }
-    void test()
-    {
-        std::cout << "test" << std::endl;
-    }
-};
-
-void func(A &a)
-{
-    std::cout << "fun(A &)" << std::endl;
-    a.test();
-}
-
-void run()
-{
-
-    A t(10);
-    std::thread th(&func, std::ref(t));
-    th.join();
-   
-}
+#include <task_impl.hpp>
 
 
 int main()
 {
-    // vsomeip::condition::main();
-    // vsomeip::condition2::main();
-    // vsomeip::future::main();
-    //vsomeip::promise::manager();
-    // run();
-    vsomeip::stream::run();
-
+   
+    task_impl task;
+    int count = 1;
+    std::thread t(&task_impl::push, &task);
+    
+    while (count <5)
+    {
+        printf("main\n");
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+       
+        count++;
+    }
+    t.join();
+    //task.stop(true);
+    
     return 0;
 }
