@@ -17,17 +17,15 @@ int main()
    
     task_impl task;
     int count = 1;
-    std::thread t(&task_impl::push, &task);
-    
-    while (count <5)
+    while (count <20)
     {
         printf("main\n");
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));
        
         count++;
     }
-    t.join();
     //task.stop(true);
-    
+    //task.refresh(false);
+    printf("-----------\n");
     return 0;
 }

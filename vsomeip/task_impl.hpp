@@ -20,18 +20,23 @@
 #include <condition_variable>
 #include <stdexcept>
 
-#define CAMER_SIZE 1024
+#define CAMERA_SIZE 1024
 
 class task_impl {
 public:
     task_impl();
-    void push();
-    void worker_thread();
+    ~task_impl();
     void stop(bool is_stop);
     bool stop();
-    ~task_impl();
+    void refresh(bool is_fresh);
+    void push();
+    void worker_thread();
+    void push_thread();
+    
+   
 private:
     std::thread worker_;
+    std::thread push_;
     std::mutex mutex_;
     std::condition_variable condition_;
     bool is_stop_;
@@ -44,9 +49,11 @@ private:
 
 inline task_impl::task_impl()
     :  is_stop_(false), is_refresh_(false) {
-    send_ = (char *)malloc(CAMER_SIZE*sizeof(char));
-    recv_ = (char *)malloc(CAMER_SIZE*sizeof(char));
+    send_ = (char *)malloc(CAMERA_SIZE*sizeof(char));
+    recv_ = (char *)malloc(CAMERA_SIZE*sizeof(char));
     this->worker_ = std::thread(&task_impl::worker_thread, this);
+    this->push_ = std::thread(&task_impl::push_thread, this);
+
 }
 
 
@@ -56,6 +63,10 @@ void task_impl::stop(bool is_stop) {
 
 bool task_impl::stop() {
     return is_stop_;
+}
+
+void task_impl::refresh(bool is_refresh) {
+    is_refresh_ = is_refresh;
 }
 
 static int count = 0;
@@ -68,40 +79,43 @@ void task_impl::worker_thread() {
             if (this->is_stop_ && !this->is_refresh_)
                 return;
             // task do something
-            memcpy(recv_, send_, CAMER_SIZE);
+            memcpy(recv_, send_, CAMERA_SIZE);
             this->is_refresh_ = false;
+            printf("pop task, count=%d\n", ++count);
         }
-        //printf("pop task, count=%d\n", ++count);
+        
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
-    
+
     }
 }
 
 
 
 static int push_count = 0;
-void task_impl::push() {
-  
+void task_impl::push_thread() {
        
-        for (int i=0; i<1000; i++) {
-            if(i==200) 
-            {
-                is_stop_ = true;
-                return;
-            }
-
+        for (;;) {
             {
                 std::unique_lock<std::mutex> lock(mutex_);
                 // 拷贝数据
-                char buffer[CAMER_SIZE] = {0};
-                memcpy(send_, buffer, CAMER_SIZE);
+                char buffer[CAMERA_SIZE] = {0};
+                memcpy(send_, buffer, CAMERA_SIZE);
                 this->is_refresh_ = true;
                 this->condition_.notify_one();
+                printf("push task, count=%d\n", ++push_count);
+                if (this->is_stop_ )
+                    return;
                 
             }
             std::this_thread::sleep_for(std::chrono::milliseconds(20));
-           // printf("push task, count=%d\n", ++push_count);
+            
 
+            // if(push_count>100) 
+            // {
+            //     is_stop_ = true;
+            //     return;
+                
+            // }
         }
    
     
@@ -114,10 +128,13 @@ inline task_impl::~task_impl() {
         is_stop_ = true;
     }
     condition_.notify_all();
-    worker_.join();
+    if (worker_.joinable())
+        worker_.join();
+    if (push_.joinable())
+        push_.join();
     free(send_);
     free(recv_);
-    printf("task_impl::~task_impl()");
+    printf("task_impl::~task_impl\n");
 }
 
 
