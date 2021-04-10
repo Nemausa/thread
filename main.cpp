@@ -9,23 +9,20 @@
 #include <condition2.hpp>
 #include <future.hpp>
 #include <con_test.hpp>
-#include <task_impl.hpp>
+#include "task_impl.hpp"
 
 
 int main()
 {
-   
     task_impl task;
     int count = 1;
-    while (count <20)
+    while (count <200)
     {
         printf("main\n");
         std::this_thread::sleep_for(std::chrono::milliseconds(200));
        
         count++;
     }
-    //task.stop(true);
-    //task.refresh(false);
     printf("-----------\n");
     return 0;
 }
